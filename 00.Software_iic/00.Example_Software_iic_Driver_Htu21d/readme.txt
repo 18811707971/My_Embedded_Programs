@@ -8,8 +8,10 @@
 	My weixin Public:躬耕硬件，Welcome to fellow
 
 	/***************************************************/
+	
+	File:F103RCT6_HTU21D_IIC
 
-	Function:IIC function of software imitate,is's can be transplant different mcu by you
+	Function:IIC driver test by sensor-htu21d and eeprom at24c02
 
 	Example：Stm32f103rc 
 
