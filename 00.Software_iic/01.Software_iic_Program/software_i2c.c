@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @Platform			:STM32F103RC原子精英版
-  * @File     			： software_i2c.c
+  * @File     		 	： software_i2c.c
   * @Anthor       		： 霁风AI
   * @LibraryVersion    	： V3.5.0
   * @FileVersion   		： V1.0.0
@@ -22,21 +22,21 @@
 /************************************************
 函数名称 ： I2C_Delay
 功    能 ： I2C延时(非标准延时,需根据MCU速度 调节大小)
-参    数 ： 无
+参    数 ： _uscnt：延时时长
 返 回 值 ： 无
 *************************************************/
-void I2C_Delay(uint16_t cnt)
+void I2C_Delay(uint16_t _usCnt)
 {
-	while(cnt--);
+	while(_usCnt--);
 }
 
 /************************************************
-*函数名称 ： I2C_GPIO_Configure
+*函数名称 ： I2C_GPIOConfigure
 *功    能 ： I2C对应管脚配置,开漏输出,外接上拉
 *参    数 ： 无
 *返 回 值 ： 无
 *************************************************/
-void I2C_GPIO_Configure(void)
+void I2C_GPIOConfigure(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -57,18 +57,18 @@ void I2C_GPIO_Configure(void)
 *************************************************/
 void I2C_Initializes(void)
 {
-	I2C_GPIO_Configure();
+	I2C_GPIOConfigure();
 	I2C_SCL_HIGH;
 	I2C_SDA_HIGH;
 }
 
 /************************************************
-*函数名称 ： void I2C_SDA_SetInput
+*函数名称 ： void I2C_SDASetInput
 *功    能 ： I2C读取数据方向设置为输入
 *参    数 ： 无
 *返 回 值 ： 无
 *************************************************/
-void I2C_SDA_SetInput(void)
+void I2C_SDASetInput(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -79,12 +79,12 @@ void I2C_SDA_SetInput(void)
 }
 
 /************************************************
-*函数名称 ： void I2C_SDA_SetOutput
+*函数名称 ： void I2C_SDASetOutput
 *功    能 ： I2C读取数据方向设置为输出
 *参    数 ： 无
 *返 回 值 ： 无
 *************************************************/
-void I2C_SDA_SetOutput(void)
+void I2C_SDASetOutput(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -134,25 +134,25 @@ void I2C_Stop(void)
 }
 
 /************************************************
-*函数名称 ： void I2C_Write_Byte
+*函数名称 ： void I2C_WriteByte
 *功    能 ： I2C写一个字节
 *参    数 ： dat：传输数据
 *返 回 值 ： 无
 *************************************************/
-void I2C_Write_Byte(uint8_t dat)
+void I2C_WriteByte(uint8_t _ucData)
 {
-	uint8_t cnt;
+	uint8_t ucCnt;
 	
-	for(cnt=0;cnt<8;cnt++)
+	for(ucCnt = 0; ucCnt < 8; ucCnt++)
 	{
 		I2C_SCL_LOW;		//SCL低电平,允许数据改变
 		delay_us(4);
 		
-		if(dat&0x80)		//从高位开始传输
+		if(_ucData&0x80)		//从高位开始传输
 			I2C_SDA_HIGH;
 		else
 			I2C_SDA_LOW;
-		dat <<= 1;
+		_ucData <<= 1;
 		delay_us(4);
 		
 		I2C_SCL_HIGH;		//数据稳定,发送给从机
@@ -163,53 +163,53 @@ void I2C_Write_Byte(uint8_t dat)
 }
 
 /******* *****************************************
-*函数名称 ： uint8_t I2C_Read_Byte
+*函数名称 ： uint8_t I2C_ReadByte
 *功    能 ： I2C读一个字节
 *参    数 ： ack：I2C_ACK-应答(0)：I2C_NACK-非应答(1)
 *返 回 值 ： dat:读取的数据
 *************************************************/
-uint8_t I2C_Read_Byte(uint8_t ack)
+uint8_t I2C_ReadByte(uint8_t _ucAck)
 {
-	uint8_t cnt,dat = 0;
+	uint8_t ucCnt,ucData = 0;
 	
 	I2C_SCL_LOW;
 	delay_us(4);
 	
 	I2C_SDA_HIGH;
 	
-	I2C_SDA_SetInput();		//切换SDA传输方向
+	I2C_SDASetInput();		//切换SDA传输方向
 	
-	for(cnt=0;cnt<8;cnt++)
+	for(ucCnt = 0; ucCnt < 8; ucCnt++)
 	{
 		I2C_SCL_HIGH;		//SCL高电平时SDA上的数据达到稳定
 		delay_us(4);		//延时等待信号稳定
 		
-		dat <<= 1;
+		ucData <<= 1;
 		if(I2C_SDA_READ)
-			dat |= 0x01;
+			ucData |= 0x01;
 		else
-			dat &= 0xfe;
+			ucData &= 0xfe;
 		I2C_SCL_LOW;		//允许数据改变
 		delay_us(4);
 	}
-	I2C_SDA_SetOutput();
-	if(ack)
-		I2C_Get_NAck();
+	I2C_SDASetOutput();
+	if(_ucAck)
+		I2C_GetNack();
 	else
-		I2C_Get_Ack();
+		I2C_GetAck();
 	
-	return dat;
+	return ucData;
 }
 
 /************************************************
-*函数名称 ： uint8_t I2C_Wait_Ack
+*函数名称 ： uint8_t I2C_WaitAck
 *功    能 ： I2C等待应答
 *参    数 ： 无
 *返 回 值 ： ack:I2C_ACK or I2C_NACK
 *************************************************/
 #if 1
 
-uint8_t I2C_Wait_Ack(void)
+uint8_t I2C_WaitAck(void)
 {
 	uint8_t ack;
 	
@@ -230,16 +230,16 @@ uint8_t I2C_Wait_Ack(void)
 }
 
 /************************************************
-*函数名称 ： uint8_t I2C_Wait_Ack
+*函数名称 ： uint8_t I2C_WaitAck
 *功    能 ： I2C等待应答,等待一定时间等待应答信号到来
 *参    数 ： 无
 *返 回 值 ： 0:I2C_ACK or 1:I2C_NACK
 *************************************************/
 #else
 
-uint8_t I2C_Wait_Ack(void)
+uint8_t I2C_WaitAck(void)
 {
-	uint8_t WaitTime = 0;
+	uint8_t ucWaitTime = 0;
 	
 	I2C_SDA_HIGH;
 	delay_us(2);
@@ -247,8 +247,8 @@ uint8_t I2C_Wait_Ack(void)
 	delay_us(2);
 	while(I2C_SDA_READ)
 	{
-		WaitTime++;
-		if(WaitTime>250)
+		ucWaitTime++;
+		if(ucWaitTime>250)
 		{
 			I2C_Stop();
 			return 1;
@@ -261,12 +261,12 @@ uint8_t I2C_Wait_Ack(void)
 #endif
 
 /************************************************
-*函数名称 ： void I2C_Get_Ack
+*函数名称 ： void I2C_GetAck
 *功    能 ： I2C得到应答
 *参    数 ： 无
 *返 回 值 ： 无
 *************************************************/
-void I2C_Get_Ack(void)
+void I2C_GetAck(void)
 {
 	I2C_SCL_LOW;
 	delay_us(4);
@@ -280,12 +280,12 @@ void I2C_Get_Ack(void)
 }
 
 /************************************************
-*函数名称 ： void I2C_Get_NAck
+*函数名称 ： void I2C_GetNack
 *功    能 ： I2C无应答
 *参    数 ： 无
 *返 回 值 ： 无
 *************************************************/
-void I2C_Get_NAck(void)
+void I2C_GetNack(void)
 {
 	I2C_SCL_LOW;
 	delay_us(4);

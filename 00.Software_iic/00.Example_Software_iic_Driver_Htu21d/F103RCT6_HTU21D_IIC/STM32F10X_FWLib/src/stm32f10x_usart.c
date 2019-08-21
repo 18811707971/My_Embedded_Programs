@@ -9,7 +9,7 @@
   * @attention
   *
   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN _ucOrder FOR THEM TO SAVE
   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
@@ -756,7 +756,7 @@ void USART_HalfDuplexCmd(USART_TypeDef* USARTx, FunctionalState NewState)
   *   This parameter can be: ENABLE or DISABLE.
   * @note
   *     This function has to be called before calling USART_Init()
-  *     function in order to have correct baudrate Divider value.   
+  *     function in _ucOrder to have correct baudrate Divider value.   
   * @retval None
   */
 void USART_OverSampling8Cmd(USART_TypeDef* USARTx, FunctionalState NewState)

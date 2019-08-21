@@ -16,6 +16,8 @@ int main(void)
 	LCD_Init();
 	Htu_Init();
 	AT24C0X_Init();
+	
+	int/*;;;;*/i;
 		      
 	LCD_ShowString(60,150,500,16,16,"HTU_TEM_VAL:00.00C");
 	LCD_ShowString(60,170,200,16,16,"HTU_HUM_VAL:00.00R");	

@@ -28,10 +28,10 @@ void Htu_Init(void)
 	  
 	I2C_Initializes();
 	I2C_Start();
-	I2C_Write_Byte(HTU_ADDR_WR);	//写I2C器件地址
-	I2C_Wait_Ack();
-	I2C_Write_Byte(HTU_SOFTWARE_RESET);		//软复位
-	I2C_Wait_Ack();
+	I2C_WriteByte(HTU_ADDR_WR);	//写I2C器件地址
+	I2C_WaitAck();
+	I2C_WriteByte(HTU_SOFTWARE_RESET);		//软复位
+	I2C_WaitAck();
 	I2C_Stop();
 	delay_ms(15);		//软复位时间最多需要15ms
   }
@@ -42,46 +42,46 @@ void Htu_Init(void)
 *参    数 ： order：测量触发命令
 *返 回 值 ： temp--温度值  humi--湿度值
 *************************************************/
-float Htu_Measure(uint8_t order)
+float Htu_Measure(uint8_t _ucOrder)
  {
-	 uint8_t MSB,LSB;
-	 volatile float temp,humi,ret;
+	 uint8_t ucMsb,ucLsb;
+	 volatile float f_Temp,f_Humi,f_RetVal;
 	 
 	 I2C_Start();
 	 
-	 I2C_Write_Byte(HTU_ADDR_WR);		//地址+写命令
-	 if(I2C_Wait_Ack()==I2C_NACK)
+	 I2C_WriteByte(HTU_ADDR_WR);		//地址+写命令
+	 if(I2C_WaitAck()==I2C_NACK)
 		 return 0;
 	 
-	 I2C_Write_Byte(order);		//触发测量命令
-	 if(I2C_Wait_Ack()==I2C_NACK)
+	 I2C_WriteByte(_ucOrder);		//触发测量命令
+	 if(I2C_WaitAck()==I2C_NACK)
 		 return 0;
 	 
 			 do{
 				 delay_ms(5);
 				 I2C_Start();
-				 I2C_Write_Byte(HTU_ADDR_RD);		//地址+读命令
-			 }while(I2C_Wait_Ack()==I2C_NACK);
+				 I2C_WriteByte(HTU_ADDR_RD);		//地址+读命令
+			 }while(I2C_WaitAck()==I2C_NACK);
 			 
-			 MSB = I2C_Read_Byte(I2C_ACK);
+			 ucMsb = I2C_ReadByte(I2C_ACK);
 			 delay_ms(5);
-			 LSB = I2C_Read_Byte(I2C_ACK);
+			 ucLsb = I2C_ReadByte(I2C_ACK);
 			 delay_ms(5);
-			 I2C_Read_Byte(I2C_NACK);
+			 I2C_ReadByte(I2C_NACK);
 			 I2C_Stop();
 			 
-			 LSB &= 0xfc;		//设置分辨率,最低两位为0,温度:14位;湿度:12位 	
-			 ret = MSB * 256 + LSB;/*MSB=(MSB<<=8)+LSB;即将MSB移位到高8位*/
+			 ucLsb &= 0xfc;		//设置分辨率,最低两位为0,温度:14位;湿度:12位 	
+			 f_RetVal = ucMsb * 256 + ucLsb;/*MSB=(MSB<<=8)+LSB;即将MSB移位到高8位*/
 			 
-			 if(order == HTU_TEMP)
+			 if(_ucOrder == HTU_TEMP)
 			 {
-				 temp = (175.72)*ret/65536-46.85;//温度:T= -46.85 + 175.72 * ST/2^16
-				 return temp;
+				 f_Temp = (175.72)*f_RetVal/65536-46.85;//温度:T= -46.85 + 175.72 * ST/2^16
+				 return f_Temp;
 			 }
-			 else if(order == HTU_HUMI)
+			 else if(_ucOrder == HTU_HUMI)
 			 {
-				 humi = (ret*125)/65536-6;//湿度: RH%= -6 + 125 * SRH/2^16
-				 return humi;
+				 f_Humi = (f_RetVal*125)/65536-6;//湿度: RH%= -6 + 125 * SRH/2^16
+				 return f_Humi;
 			 }
 			 else
 				return 0;
@@ -95,32 +95,32 @@ float Htu_Measure(uint8_t order)
 *************************************************/
 void HTU_Display(void)
 {
-	u16 temp;
-	volatile float ret;
-	u8 test[10];
+	u16 usTemp;
+	volatile float f_RetVal;
+	u8 ucTest[10];
 	
-	ret= Htu_Measure(HTU_TEMP);//得到温度值
-	printf("The htu measure temp is :%4.2fC \n",ret);
+	f_RetVal = Htu_Measure(HTU_TEMP);//得到温度值
+	printf("The htu measure temp is :%4.2fC \n",f_RetVal);
 	
-	sprintf((char*)test,"%4.2f",ret);		//LCD显示方式1：sprintf函数将结果打印到test数组里,转换成字符串
-	printf("test is %sC \n",test);
+	sprintf((char*)ucTest,"%4.2f",f_RetVal);		//LCD显示方式1：sprintf函数将结果打印到test数组里,转换成字符串
+	printf("test is %sC \n",ucTest);
 	printf("\r\n");
 	LCD_ShowString(100,100,200,16,16,"sprintf:");		
-	LCD_ShowString(164,100,200,16,16,test);
+	LCD_ShowString(164,100,200,16,16,ucTest);
 	
-	temp = ret;			//LCD显示方式2:将得到的数值拆分成整数和小数直接显示在液晶
-	LCD_ShowxNum(156,150,temp,2,16,0);
-	ret -= temp;
-	ret *= 100;		//保留两位小数
-	LCD_ShowxNum(180,150,ret,2,16,0);
+	usTemp = f_RetVal;			//LCD显示方式2:将得到的数值拆分成整数和小数直接显示在液晶
+	LCD_ShowxNum(156,150,usTemp,2,16,0);
+	f_RetVal -= usTemp;
+	f_RetVal *= 100;		//保留两位小数
+	LCD_ShowxNum(180,150,f_RetVal,2,16,0);
 		
-	ret= Htu_Measure(HTU_HUMI);		//得到湿度值
-	printf("The htu measure humi is :%4.2fRH \n",ret);
-	temp = ret;
-	LCD_ShowxNum(156,170,temp,2,16,0);//显示湿度值
-	ret -= temp;
-	ret *= 100;
-	LCD_ShowxNum(180,170,ret,2,16,0x80);
+	f_RetVal= Htu_Measure(HTU_HUMI);		//得到湿度值
+	printf("The htu measure humi is :%4.2fRH \n",f_RetVal);
+	usTemp = f_RetVal;
+	LCD_ShowxNum(156,170,usTemp,2,16,0);//显示湿度值
+	f_RetVal -= usTemp;
+	f_RetVal *= 100;
+	LCD_ShowxNum(180,170,f_RetVal,2,16,0x80);
 }
 
 	

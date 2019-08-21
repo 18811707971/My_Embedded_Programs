@@ -50,19 +50,19 @@
 #define I2C_NACK				1				//非应答
 
 //**************函数声明***************************************//
-extern void I2C_Delay(uint16_t cnt);
-extern void I2C_GPIO_Configure(void);
+extern void I2C_Delay(uint16_t _usCnt);
+extern void I2C_GPIOConfigure(void);
 extern void I2C_Initializes(void);
-extern void I2C_SDA_SetInput(void);
-extern void I2C_SDA_SetOutput(void);
+extern void I2C_SDASetInput(void);
+extern void I2C_SDASetOutput(void);
 extern void I2C_Start(void);
 extern void I2C_Stop(void);
-extern void I2C_Write_Byte(uint8_t dat);
-extern uint8_t I2C_Read_Byte(uint8_t ack);
+extern void I2C_WriteByte(uint8_t _ucData);
+extern uint8_t I2C_ReadByte(uint8_t _ucAck);
 
-extern uint8_t I2C_Wait_Ack(void);
-extern void I2C_Get_Ack(void);
-extern void I2C_Get_NAck(void);
+extern uint8_t I2C_WaitAck(void);
+extern void I2C_GetAck(void);
+extern void I2C_GetNack(void);
 
 #endif
 

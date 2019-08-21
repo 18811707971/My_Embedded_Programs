@@ -25,9 +25,9 @@
 
 #define HTU_SOFTWARE_RESET  0xfe
 
-void Htu_Init(void);
-float Htu_Measure(uint8_t order);
-void HTU_Display(void);
+extern void Htu_Init(void);
+extern float Htu_Measure(uint8_t _ucOrder);
+extern void HTU_Display(void);
 
 #endif
 

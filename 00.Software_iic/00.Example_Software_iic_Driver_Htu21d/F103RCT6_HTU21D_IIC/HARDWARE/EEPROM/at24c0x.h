@@ -17,10 +17,10 @@
 #define AT24C0X_ADDR	0xA0		//AT24C02 iic address 
 
 extern void AT24C0X_Init(void);
-extern void AT24C0X_Write_Byte(uint16_t WriteAddr, uint8_t WriteData);
-extern uint8_t AT24C0X_Read_Byte(uint16_t ReadAddr);
-extern void AT24C0X_WriteSomeBytes(uint16_t WriteAddr,uint8_t *WriteData,uint16_t Len);
-extern void AT24C0X_ReadSomeBytes(uint16_t ReadAddr,uint8_t *ReadData,uint16_t Len);
+extern void AT24C0X_WriteByte(uint16_t _usWriteAddr, uint8_t _ucWriteData);
+extern uint8_t AT24C0X_ReadByte(uint16_t _usReadAddr);
+extern void AT24C0X_WriteSomeBytes(uint16_t _usWriteAddr,uint8_t *_pWriteData,uint16_t _usLen);
+extern void AT24C0X_ReadSomeBytes(uint16_t _usReadAddr,uint8_t *_pReadData,uint16_t _usLen);
 
 extern void AT24C0X_Check(void);
 

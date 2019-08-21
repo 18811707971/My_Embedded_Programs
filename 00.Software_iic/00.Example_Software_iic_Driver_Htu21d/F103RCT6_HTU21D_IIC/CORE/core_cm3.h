@@ -828,22 +828,22 @@ extern uint32_t __get_MSP(void);
 extern void __set_MSP(uint32_t topOfMainStack);
 
 /**
- * @brief  Reverse byte order in unsigned short value
+ * @brief  Reverse byte _ucOrder in unsigned short value
  *
  * @param   value  value to reverse
  * @return         reversed value
  *
- * Reverse byte order in unsigned short value
+ * Reverse byte _ucOrder in unsigned short value
  */
 extern uint32_t __REV16(uint16_t value);
 
 /**
- * @brief  Reverse byte order in signed short value with sign extension to integer
+ * @brief  Reverse byte _ucOrder in signed short value with sign extension to integer
  *
  * @param   value  value to reverse
  * @return         reversed value
  *
- * Reverse byte order in signed short value with sign extension to integer
+ * Reverse byte _ucOrder in signed short value with sign extension to integer
  */
 extern int32_t __REVSH(int16_t value);
 
@@ -1114,22 +1114,22 @@ extern uint32_t __get_MSP(void);
 extern void __set_MSP(uint32_t topOfMainStack);
 
 /**
- * @brief  Reverse byte order in unsigned short value
+ * @brief  Reverse byte _ucOrder in unsigned short value
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse byte order in unsigned short value
+ * Reverse byte _ucOrder in unsigned short value
  */
 extern uint32_t __REV16(uint16_t value);
 
 /**
- * @brief  Reverse bit order of value
+ * @brief  Reverse bit _ucOrder of value
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse bit order of value
+ * Reverse bit _ucOrder of value
  */
 extern uint32_t __RBIT(uint32_t value);
 
@@ -1329,42 +1329,42 @@ extern uint32_t __get_CONTROL(void);
 extern void __set_CONTROL(uint32_t control);
 
 /**
- * @brief  Reverse byte order in integer value
+ * @brief  Reverse byte _ucOrder in integer value
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse byte order in integer value
+ * Reverse byte _ucOrder in integer value
  */
 extern uint32_t __REV(uint32_t value);
 
 /**
- * @brief  Reverse byte order in unsigned short value
+ * @brief  Reverse byte _ucOrder in unsigned short value
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse byte order in unsigned short value
+ * Reverse byte _ucOrder in unsigned short value
  */
 extern uint32_t __REV16(uint16_t value);
 
 /**
- * @brief  Reverse byte order in signed short value with sign extension to integer
+ * @brief  Reverse byte _ucOrder in signed short value with sign extension to integer
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse byte order in signed short value with sign extension to integer
+ * Reverse byte _ucOrder in signed short value with sign extension to integer
  */
 extern int32_t __REVSH(int16_t value);
 
 /**
- * @brief  Reverse bit order of value
+ * @brief  Reverse bit _ucOrder of value
  *
  * @param  value  value to reverse
  * @return        reversed value
  *
- * Reverse bit order of value
+ * Reverse bit _ucOrder of value
  */
 extern uint32_t __RBIT(uint32_t value);
 

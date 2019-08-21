@@ -32,52 +32,52 @@ void AT24C0X_Init(void)
 }
 
 /************************************************
-*函数名称 ： void AT24C0X_Write_Byte
+*函数名称 ： void AT24C0X_WriteByte
 *功    能 ： AT24C0X设备指定地址写入一个字节的数据
 *参    数 ： WriteAddr:写入的地址;WriteData:写入的数据
 *返 回 值 ： 无
 *************************************************/
-void AT24C0X_Write_Byte(uint16_t WriteAddr, uint8_t WriteData)
+void AT24C0X_WriteByte(uint16_t _usWriteAddr, uint8_t _ucWriteData)
 {
 	I2C_Start();
-	I2C_Write_Byte(AT24C0X_ADDR);
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(AT24C0X_ADDR);
+	if (I2C_WaitAck() == I2C_NACK)
 		;
-	I2C_Write_Byte(WriteAddr%256);	//写入地址设置为8位
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(_usWriteAddr%256);	//写入地址设置为8位
+	if (I2C_WaitAck() == I2C_NACK)
 		;
-	I2C_Write_Byte(WriteData);
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(_ucWriteData);
+	if (I2C_WaitAck() == I2C_NACK)
 		;
 	I2C_Stop();
 	delay_ms(10);
 }
 
 /************************************************
-*函数名称 ： uint8_t AT24C0X_Read_Byte
+*函数名称 ： uint8_t AT24C0X_ReadByte
 *功    能 ： AT24C0X设备指定地址读出一个字节的数据
 *参    数 ： WriteAddr:读出数据的地址
 *返 回 值 ： tmp:返回读取的数据
 *************************************************/
-uint8_t AT24C0X_Read_Byte(uint16_t ReadAddr)
+uint8_t AT24C0X_ReadByte(uint16_t _usReadAddr)
 {
-	uint8_t tmp;
+	uint8_t ucTmp;
 
 	I2C_Start();
-	I2C_Write_Byte(AT24C0X_ADDR);
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(AT24C0X_ADDR);
+	if (I2C_WaitAck() == I2C_NACK)
 		return 0;
-	I2C_Write_Byte(ReadAddr%256);
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(_usReadAddr%256);
+	if (I2C_WaitAck() == I2C_NACK)
 		return 0;
 	I2C_Start();
-	I2C_Write_Byte(AT24C0X_ADDR|0x01);
-	if (I2C_Wait_Ack() == I2C_NACK)
+	I2C_WriteByte(AT24C0X_ADDR|0x01);
+	if (I2C_WaitAck() == I2C_NACK)
 		return 0;
-	tmp = I2C_Read_Byte(I2C_NACK);
+	ucTmp = I2C_ReadByte(I2C_NACK);
 	I2C_Stop();
 
-	return tmp;
+	return ucTmp;
 }
 
 /************************************************
@@ -86,13 +86,13 @@ uint8_t AT24C0X_Read_Byte(uint16_t ReadAddr)
 *参    数 ： WriteAddr:写入数据的地址;WriteData:写入的数据;Len:写入数据的长度
 *返 回 值 ： 无
 *************************************************/
-void AT24C0X_WriteSomeBytes(uint16_t WriteAddr,uint8_t *WriteData,uint16_t Len)
+void AT24C0X_WriteSomeBytes(uint16_t _usWriteAddr,uint8_t *_pWriteData,uint16_t _usLen)
 {
-	while(Len--)
+	while(_usLen--)
 	{
-		AT24C0X_Write_Byte(WriteAddr,*WriteData);
-		WriteAddr++;
-		WriteData++;
+		AT24C0X_WriteByte(_usWriteAddr,*_pWriteData);
+		_usWriteAddr++;
+		_pWriteData++;
 	}
 }
 
@@ -102,18 +102,18 @@ void AT24C0X_WriteSomeBytes(uint16_t WriteAddr,uint8_t *WriteData,uint16_t Len)
 *参    数 ： WriteAddr:读取数据的地址;WriteData:读取的数据;Len:读取数据的长度
 *返 回 值 ： 无
 *************************************************/
-void AT24C0X_ReadSomeBytes(uint16_t ReadAddr,uint8_t *ReadData,uint16_t Len)
+void AT24C0X_ReadSomeBytes(uint16_t _usReadAddr,uint8_t *_pReadData,uint16_t _usLen)
 {
-	while(Len--)
+	while(_usLen--)
 	{
-		*ReadData++ = AT24C0X_Read_Byte(ReadAddr++);
+		*_pReadData++ = AT24C0X_ReadByte(_usReadAddr++);
 	}
 	
 }
 
-uint8_t AT_Buff = 'O';
-uint8_t AT_Wbuf[] = {"AT_TEST112233"};
-uint8_t AT_Rbuf[] = {"0000000000000"};
+uint8_t g_ATBuff = 'O';
+uint8_t g_ATWbuf[] = {"AT_TEST112233"};
+uint8_t g_ATRbuf[] = {"0000000000000"};
 
 /************************************************
 *函数名称 ： void AT24C0X_Check
@@ -123,17 +123,17 @@ uint8_t AT_Rbuf[] = {"0000000000000"};
 *************************************************/
 void AT24C0X_Check(void)
 {
-	uint8_t ret;
+	uint8_t ucRetVal;
 	
-	AT24C0X_Write_Byte(0x01,AT_Buff);
-	ret = AT24C0X_Read_Byte(0X01);
-	LCD_ShowChar(80,200,AT_Buff,16,0);
-	LCD_ShowChar(80,220,ret,16,0);
+	AT24C0X_WriteByte(0x01,g_ATBuff);
+	ucRetVal = AT24C0X_ReadByte(0X01);
+	LCD_ShowChar(80,200,g_ATBuff,16,0);
+	LCD_ShowChar(80,220,ucRetVal,16,0);
 	
-	AT24C0X_WriteSomeBytes(0x0A,AT_Wbuf,sizeof(AT_Wbuf));
-	AT24C0X_ReadSomeBytes(0x0A,AT_Rbuf,sizeof(AT_Rbuf));
-	LCD_ShowString(80,240,200,16,16,AT_Wbuf);
-	LCD_ShowString(80,260,200,16,16,AT_Rbuf);
+	AT24C0X_WriteSomeBytes(0x0A,g_ATWbuf,sizeof(g_ATWbuf));
+	AT24C0X_ReadSomeBytes(0x0A,g_ATRbuf,sizeof(g_ATRbuf));
+	LCD_ShowString(80,240,200,16,16,g_ATWbuf);
+	LCD_ShowString(80,260,200,16,16,g_ATRbuf);
 }
 
 
